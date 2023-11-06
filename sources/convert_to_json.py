@@ -2,7 +2,7 @@ import openpyxl
 import json
 import datetime
 
-def convert_to_json(fichier_entree, fichier_sortie):
+def convert_to_json(fichier_entree, chemin_sortie):
     document = openpyxl.load_workbook(fichier_entree, data_only=True)
 
     feuille_travaux = document["Travaux"]
@@ -11,7 +11,7 @@ def convert_to_json(fichier_entree, fichier_sortie):
     financeurs = lister_financeurs(feuille_financeurs)
     travaux = lister_travaux(feuille_travaux, financeurs)
 
-    ecrire_fichier_json(fichier_sortie, travaux)
+    return ecrire_fichier_json(chemin_sortie, travaux)
 
 
 def lister_financeurs(feuille):
@@ -70,20 +70,18 @@ def lister_travaux(feuille, financeurs):
         travaux.append(ligne_travaux)
         i += 1 
     
-    print (travaux)
     return travaux
 
 
-def ecrire_fichier_json(nom_fichier, donnees):
+def ecrire_fichier_json(chemin_sortie, donnees):
     # génération d'un nom de fichier unique
     now = datetime.datetime.now()
     nom_fichier = "export_" + str(now.year) + "-" + str(now.month) + "-" + str(now.day) + "_" + str(now.hour) + "-" + str(now.minute) + "-" + str(now.second) + ".json"
+    chemin_fichier = chemin_sortie + "/" + nom_fichier
 
     # écriture dans un fichier JSON
-    with open(nom_fichier, "w") as fichier:
+    with open(chemin_fichier, "w") as fichier:
         json.dump(donnees, fichier)
-
-
-# chemin = "modèle_en_entrée.xlsx"
-# convert_to_json(chemin, "sortie.json")
+    
+    return nom_fichier
     
